@@ -24,7 +24,6 @@ const server = http.createServer((req, res) => {
         // Create a /api/time endpoint that returns current date/time as JSON
         // Uncomment and complete the code below:
         
-        /*
         if (req.url === '/api/time' && req.method === 'GET') {
             const currentDateTime = new Date().toISOString();
             res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -34,7 +33,6 @@ const server = http.createServer((req, res) => {
             }));
             return;
         }
-        */
 
 
         // ========================================
@@ -43,11 +41,18 @@ const server = http.createServer((req, res) => {
         // Map URLs to HTML files in the public folder
         // Complete the if-else chain below:
         
-        let filePath;
-        if (req.url === '/') {
-            // Home page
-            filePath = path.join(PUBLIC_DIR, 'index.html');
-        } 
+       let filePath;
+
+if (req.url === '/') {
+    // Home page
+    filePath = path.join(PUBLIC_DIR, 'index.html');
+}
+else if (req.url === '/about') {
+    filePath = path.join(PUBLIC_DIR, 'about.html');
+}
+else if (req.url === '/contact') {
+    filePath = path.join(PUBLIC_DIR, 'contact.html');
+}
         // TODO: Add 'else if' for '/about' -> 'about.html'
         // Example: else if (req.url === '/about') { filePath = path.join(PUBLIC_DIR, 'about.html'); }
         
@@ -61,7 +66,6 @@ const server = http.createServer((req, res) => {
         // Handle requests for CSS files from /styles/ folder
         // Uncomment and complete the security check:
         
-        /*
         else if (req.url.startsWith('/styles/')) {
             filePath = path.join(PUBLIC_DIR, req.url);
             
@@ -72,7 +76,6 @@ const server = http.createServer((req, res) => {
                 return;
             }
         }
-        */
         else {
             // No route matched -> 404
             handle404(res);
@@ -134,7 +137,6 @@ function handle404(res) {
     // If failed: Send 404 status with plain text "404 - Page Not Found"
     
     // Example structure:
-    /*
     fs.readFile(notFoundPath, (err, content) => {
         if (err) {
             res.writeHead(404, { 'Content-Type': 'text/plain' });
@@ -144,13 +146,13 @@ function handle404(res) {
             res.end(content, 'utf-8');
         }
     });
-    */
 }
 
 // Function to handle 500 errors (Server Error)
 function handleServerError(res, error) {
     // Step 1: Log the error to the console
     // TODO: Use console.error() to log the error
+    console.error(error);
     
     
     // Step 2: Create the path to 500.html
@@ -160,7 +162,15 @@ function handleServerError(res, error) {
     // TODO: Similar to handle404, read serverErrorPath and serve it
     // If successful: Send 500 status with the HTML content
     // If failed: Send 500 status with plain text "500 - Internal Server Error"
-    
+    fs.readFile(serverErrorPath, (err, content) => {
+    if (err) {
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        res.end('500 - Internal Server Error');
+    } else {
+        res.writeHead(500, { 'Content-Type': 'text/html' });
+        res.end(content, 'utf-8');
+    }
+});
 }
 
 
@@ -169,7 +179,7 @@ function handleServerError(res, error) {
 // ========================================
 // Start listening for requests on PORT 3000
 server.listen(PORT, () => {
-    // TODO: Log a message to indicate the server is running
+    console.log(`Server is running on http://localhost:${PORT}`);
     // Example: console.log(`Server is running on http://localhost:${PORT}`);
     
     
